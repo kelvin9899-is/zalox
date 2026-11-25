@@ -1,0 +1,54 @@
+[package]
+name = "zalox"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "Pure-Rust async SDK, real-time event engine, anti-ban traffic pacer, and bot framework for Zalo personal & group automation."
+license = "MIT OR Apache-2.0"
+keywords = ["zalo", "chatbot", "websocket", "vietqr", "async"]
+categories = ["api-bindings", "asynchronous", "network-programming", "cryptography"]
+readme = "README.md"
+repository = "https://github.com/kelvin9899-is/zalox"
+
+[dependencies]
+# Async runtime & concurrency
+tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "time", "sync", "fs", "net", "signal"] }
+futures-util = "0.3"
+
+# HTTP & WebSocket (100% Pure-Rust TLS via rustls — zero OpenSSL dependency)
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "multipart", "cookies", "gzip", "deflate"] }
+reqwest_cookie_store = "0.8"
+cookie_store = "0.21"
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
+url = "2.5"
+urlencoding = "2.1"
+http = "1.1"
+
+# Serialization & bytes
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bytes = "1.7"
+
+# Pure-Rust Cryptography & Compression
+aes = "0.8"
+cbc = { version = "0.1", features = ["alloc"] }
+aes-gcm = "0.10"
+cipher = { version = "0.4", features = ["alloc", "block-padding"] }
+pbkdf2 = { version = "0.12", features = ["hmac"] }
+hmac = "0.12"
+sha2 = "0.10"
+md-5 = "0.10"
+subtle = "2.6"
+base64 = "0.22"
+hex = "0.4"
+flate2 = "1.0"
+rand = "0.8"
+uuid = { version = "1.10", features = ["v4"] }
+
+# Diagnostics, Errors & Terminal QR
+thiserror = "2.0"
+tracing = "0.1"
+qrcode = { version = "0.14", default-features = false }
+
+[dev-dependencies]
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

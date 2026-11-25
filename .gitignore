@@ -1,0 +1,8 @@
+/target
+*.zlx
+*.session.json
+qr.png
+qr_*.png
+.env
+.DS_Store
+Thumbs.db
