@@ -1,51 +1,51 @@
-# 🦀 `zalox` — Pure-Rust Async Zalo SDK, Real-Time Engine & Bot Toolkit
+<div align="center">
 
-[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org)
-[![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE-MIT)
-[![Pure Rust TLS](https://img.shields.io/badge/TLS-rustls%20(Zero%20OpenSSL)-success.svg)](#)
+# 🦀 zalox
 
-**`zalox`** là bộ SDK bất đồng bộ viết **100% bằng Pure Rust** dành cho việc xây dựng hệ thống tự động hóa, trợ lý AI và chatbot thương mại trên Zalo (hỗ trợ cả hội thoại cá nhân 1-1 lẫn nhóm chat).
+**Unofficial Zalo API for Rust** — async, typed, and dependency-light.
 
-Khác biệt hoàn toàn với các thư viện viết bằng JavaScript hay Python phải kéo theo runtime cồng kềnh hoặc thư viện C++ xử lý ảnh nặng nề (`sharp`/`libvips`, OpenSSL), `zalox` biên dịch ra **một file thực thi độc lập duy nhất (~6–10 MB)**, sử dụng RAM siêu thấp (~12 MB) và tích hợp sẵn các mảnh ghép thực chiến cho sản phẩm tại Việt Nam.
+*Đăng nhập QR · Nghe sự kiện realtime · Gửi tin / ảnh / nhóm · Bot framework · VietQR — viết 100% bằng Rust.*
 
----
+[![CI](https://github.com/kelvin9899-is/zalox/actions/workflows/ci.yml/badge.svg)](https://github.com/kelvin9899-is/zalox/actions)
+[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange?logo=rust)](https://www.rust-lang.org)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)](#license)
+[![TLS](https://img.shields.io/badge/TLS-rustls-success)](#)
+[![Status](https://img.shields.io/badge/status-v0.1%20experimental-yellow)](#status)
 
-## ✨ Điểm Khác Biệt Cốt Lõi
+[Quick start](#-quick-start) · [Features](#-features) · [Architecture](#-architecture) · [So sánh](#-so-sánh) · [Roadmap](#-roadmap) · [Tác giả](#-tác-giả)
 
-- **Kiến trúc Domain-Driven chuẩn Rust**: Thay vì gom hàng trăm hàm rời rạc vào một object phẳng, `zalox` phân tách mạch lạc thành các phân hệ Fluent Builder:
-  - `session.messaging()` — Soạn thảo tin nhắn định dạng đậm/nghiêng/màu sắc, trích dẫn (`quote`), nhắc tên (`@mention` / `@All`), thu hồi (`recall`), chuyển tiếp hàng loạt, thả cảm xúc (`ReactionKind`), gửi nhãn dán (`sticker`).
-  - `session.contacts()` — Tìm kiếm qua số điện thoại, lấy hồ sơ chi tiết, danh sách bạn bè, lời mời kết bạn, đặt biệt danh.
-  - `session.groups()` — Liệt kê nhóm, thông tin nhóm, tạo nhóm mới, thêm/mời thành viên, đổi tên nhóm, tạo bình chọn (`PollBlueprint`).
-  - `session.media()` — Bộ đọc kích thước ảnh **Pure-Rust Zero-Decode** (`PNG`, `JPEG`, `GIF`, `WebP`) không cần giải mã điểm ảnh hay cài `sharp`, hỗ trợ tải lên phân mảnh (chunked upload).
-- **Kho Phiên Mã Hóa `ZLX1` (`SessionVault`)**: Đăng nhập quét QR một lần duy nhất, lưu trữ thông tin phiên xuống đĩa bằng `PBKDF2-HMAC-SHA256` (100.000 vòng) + `AES-256-GCM`, tuyệt đối không phơi bày Cookie dạng văn bản thuần.
-- **Bộ Điều Nhịp Chống Khóa Tài Khoản (`TrafficPacer`)**: Tích hợp sẵn cơ chế giãn cách kèm độ trễ ngẫu nhiên mô phỏng thao tác người thật (`PacingPolicy::human_like()`).
-- **Luồng Sự Kiện Nhị Phân Thời Gian Thực (`RealtimeHandle`)**: Tự động giải mã gói nhị phân 4-byte (`AES-GCM` 16-byte IV/AAD + `Zlib/Deflate`), tự động xoay vòng máy chủ WebSocket khi rớt mạng và phát nhịp tim giữ kết nối.
-- **Bộ Định Tuyến Bot (`BotRouter<S>`)**: Khai báo lệnh theo tiền tố (`!ping`, `/qr`), chia sẻ trạng thái đa luồng `Arc<S>`, tự động bật trạng thái *"đang soạn tin..."* trước khi phản hồi.
-- **Hệ Sinh Thái Sản Phẩm Việt Nam (`zalox::ecosystem`)**:
-  - **VietQR Offline (`VietQrOrder`)**: Tự sinh chuỗi chuẩn EMVCo NAPAS 24/7 (`A000000727` + `CRC-16/CCITT-FALSE`), vẽ mã QR ngay trên Terminal hoặc xuất link ảnh QR động mà không phụ thuộc dịch vụ ngoài.
-  - **Xác Thực Webhook Thanh Toán**: Hàm kiểm tra chữ ký `HMAC-SHA256` chống tấn công thời gian (constant-time) cho **payOS** và **SePay**.
-  - **Cầu Nối AI (`LlmBridge`)**: Kết nối gọn nhẹ tới **Groq**, **OpenRouter**, **OpenAI** và **Google Gemini**.
+</div>
 
 ---
 
-## 📦 Cài Đặt
+> [!WARNING]
+> **zalox là thư viện không chính thức**, không liên kết với VNG/Zalo. Tự động hóa tài khoản cá nhân có thể vi phạm điều khoản dịch vụ và dẫn tới bị hạn chế hoặc khóa tài khoản. Hãy dùng tài khoản phụ khi thử nghiệm. Với sản phẩm thương mại, ưu tiên **Zalo OA / Zalo Bot Platform** chính thức.
 
-Thêm `zalox` vào `Cargo.toml` của dự án:
+## ✨ Features
+
+| | |
+|---|---|
+| 🔐 **Đăng nhập QR** | Luồng quét QR bất đồng bộ, hỗ trợ quét xác nhận lần hai, sự kiện `QrReady` / `Scanned` / `Authenticated` |
+| 🗄️ **Session Vault `ZLX1`** | Lưu phiên đã mã hóa (PBKDF2-HMAC-SHA256 + AES-256-GCM), không lưu cookie dạng thuần văn bản |
+| ⚡ **Realtime** | WebSocket nhị phân, giải mã AES-GCM + inflate, heartbeat, tự reconnect và xoay endpoint |
+| 💬 **Messaging** | Rich-text, `@mention`, trích dẫn, thu hồi, xóa, chuyển tiếp, reaction, sticker, typing |
+| 👥 **Contacts & Groups** | Tìm theo SĐT, hồ sơ, bạn bè, tạo/đổi tên nhóm, thêm/xóa thành viên, bình chọn |
+| 🖼️ **Media** | Đọc kích thước PNG/JPEG/GIF/WebP trực tiếp từ header (không cần `sharp`/`libvips`), upload chia chunk |
+| 🛡️ **Traffic pacing** | `PacingPolicy` giãn cách + jitter ngẫu nhiên cho mọi request ghi |
+| 🤖 **BotRouter** | Lệnh theo tiền tố, state dùng chung `Arc<S>`, tự gửi typing trước khi trả lời |
+| 🇻🇳 **Hệ sinh thái VN** | VietQR EMVCo offline, xác thực webhook payOS / SePay, cầu nối LLM (Groq, OpenRouter, Gemini) |
+
+## 🚀 Quick start
 
 ```toml
 [dependencies]
-zalox = { git = "https://github.com/kelvin9899-is/zalox.git" }
+zalox = { git = "https://github.com/kelvin9899-is/zalox" }
 tokio = { version = "1", features = ["full"] }
 ```
 
----
-
-## 🚀 Bắt Đầu Nhanh
-
-### 1. Đăng nhập mã QR & Lưu phiên mã hóa `ZLX1`
+### Đăng nhập một lần, dùng mãi
 
 ```rust
-use std::path::Path;
 use zalox::prelude::*;
 
 #[tokio::main]
@@ -54,48 +54,47 @@ async fn main() -> ZaloxResult<()> {
         .pacing(PacingPolicy::human_like())
         .build();
 
-    let session = if Path::new("account.zlx").exists() {
-        client.login_with_vault("account.zlx", "mat-khau-kho-cua-ban").await?
+    let session = if std::path::Path::new("account.zlx").exists() {
+        client.login_with_vault("account.zlx", "passphrase").await?
     } else {
         let s = client
             .login_with_qr(|ev| {
                 if let QrAuthEvent::QrReady { png_bytes, .. } = ev {
                     let _ = std::fs::write("qr.png", png_bytes);
-                    println!("Quét file qr.png bằng ứng dụng Zalo trên điện thoại!");
+                    println!("Quét qr.png bằng app Zalo");
                 }
             })
             .await?;
-        s.save_vault("account.zlx", "mat-khau-kho-cua-ban").await?;
+        s.save_vault("account.zlx", "passphrase").await?;
         s
     };
 
-    println!("Đăng nhập thành công UID: {}", session.uid());
+    println!("UID: {}", session.uid());
     Ok(())
 }
 ```
 
-### 2. Khởi chạy Chatbot kèm VietQR bằng `BotRouter`
+### Bot trong 20 dòng
 
 ```rust
 use zalox::prelude::*;
 
 #[tokio::main]
 async fn main() -> ZaloxResult<()> {
-    let client = ZaloxClient::default();
-    let session = client.login_with_vault("account.zlx", "mat-khau-kho-cua-ban").await?;
+    let session = ZaloxClient::default()
+        .login_with_vault("account.zlx", "passphrase")
+        .await?;
 
     let router = BotRouter::new("!")
-        .command("ping", |ctx, _args| async move {
+        .command("ping", |ctx, _| async move {
             ctx.react(ReactionKind::Heart).await?;
-            ctx.quote_reply("🏓 Pong từ động cơ Pure-Rust zalox!").await?;
+            ctx.quote_reply("pong 🏓").await?;
             Ok(())
         })
         .command("pay", |ctx, args| async move {
-            let vnd: u64 = args.first().and_then(|s| s.parse().ok()).unwrap_or(100_000);
-            let qr = VietQrOrder::new(VnBank::MBBank, "0987654321")
-                .amount(vnd)
-                .memo("THANHTOAN VIP");
-            ctx.quote_reply(format!("Quét mã VietQR: {}", qr.to_vietqr_image_url())).await?;
+            let vnd = args.first().and_then(|s| s.parse().ok()).unwrap_or(50_000);
+            let qr = VietQrOrder::new(VnBank::MBBank, "0987654321").amount(vnd).memo("THANHTOAN");
+            ctx.quote_reply(qr.to_vietqr_image_url()).await?;
             Ok(())
         });
 
@@ -103,55 +102,88 @@ async fn main() -> ZaloxResult<()> {
 }
 ```
 
-### 3. Gửi tin nhắn định dạng Rich-Text theo phong cách Fluent Builder
+### Tin nhắn định dạng kiểu builder
 
 ```rust
-session
-    .messaging()
+session.messaging()
     .compose(Peer::group("GROUP_ID"))
-    .text("Thông báo quan trọng cho cả nhóm @All!")
-    .bold(0..20)
-    .mention_all(33, 4)
+    .text("Thông báo quan trọng @All")
+    .bold(0..18)
+    .mention_all(19, 4)
     .urgency(MessageUrgency::Important)
     .send()
     .await?;
 ```
 
----
+Chạy thử không cần đăng nhập: `cargo run --example vietqr_ai_assistant`
 
-## 🗂️ Cấu Trúc Thư Mục
+## 🏗️ Architecture
 
-```text
-zalox/
-├── src/
-│   ├── auth/         # Luồng xác thực QR & định dạng Credentials đa năng
-│   ├── bot/          # Bộ định tuyến lệnh bất đồng bộ BotRouter<S>
-│   ├── cipher/       # AES-CBC, ZCID, Frame WebSocket AES-GCM 16B & Kho khóa ZLX1
-│   ├── ecosystem/    # VietQR EMVCo offline, Webhook payOS/SePay, Cầu nối AI LLM
-│   ├── realtime/     # Giám sát kết nối WebSocket, xoay vòng endpoint & sự kiện
-│   ├── services/     # Messaging, Contacts, Groups, Media & Pure-Rust Image Probe
-│   ├── transport/    # HttpGateway, dò tự động zpw_ver & TrafficPacer chống khóa nick
-│   ├── error.rs      # Phân loại lỗi tường minh với thiserror
-│   ├── session.rs    # ZaloxBuilder, ZaloxClient & ZaloxSession (Arc-backed)
-│   └── types.rs      # Kiểu miền dùng chung (Peer, ServiceDirectory, Limits)
-└── examples/
-    ├── qr_vault_login.rs
-    ├── command_bot.rs
-    └── vietqr_ai_assistant.rs
+```mermaid
+flowchart LR
+    A[ZaloxClient] -->|QR / Vault| B[ZaloxSession]
+    B --> C[messaging]
+    B --> D[contacts]
+    B --> E[groups]
+    B --> F[media]
+    B --> G[RealtimeHandle]
+    G --> H[BotRouter]
+    B --> I[(HttpGateway + TrafficPacer)]
+    H --> J[ecosystem: VietQR · Webhook · LLM]
 ```
 
----
+```text
+src/
+├─ auth/       QR flow, credentials
+├─ cipher/     AES-CBC session cipher, WS frame codec, ZLX1 vault
+├─ transport/  HttpGateway (cookies, version probe), TrafficPacer
+├─ realtime/   WebSocket supervisor + typed events
+├─ services/   messaging · contacts · groups · media
+├─ bot/        BotRouter
+└─ ecosystem/  vietqr · webhook · ai_bridge
+```
 
-## ⚠️ Lưu Ý An Toàn & Miễn Trừ Trách Nhiệm
+## 📊 So sánh
 
-1. **Dự án độc lập phi chính thức**: `zalox` là bộ công cụ nghiên cứu & tự động hóa giao thức Web độc lập, không liên kết hoặc được bảo trợ bởi VNG / Zalo Group.
-2. **Bảo vệ tài khoản cá nhân**:
-   - Không mở song song `chat.zalo.me` trên trình duyệt của cùng tài khoản khi đang chạy `subscribe_events()` / `run_bot()`.
-   - Luôn bật `PacingPolicy::balanced()` hoặc `PacingPolicy::human_like()`, tránh gửi tin nhắn quảng cáo hàng loạt tới người lạ.
-   - Với các hệ thống CSKH quy mô doanh nghiệp cần cam kết SLA chính thống, hãy kết hợp thêm Zalo Official Account (OA) / ZNS.
+| | **zalox** (Rust) | zca-js (JS/TS) | zlapi (Python) |
+|---|---|---|---|
+| Runtime | Binary native | Node / Bun | CPython |
+| Đóng gói | 1 file thực thi | cần Node + `node_modules` | cần Python + pip |
+| Kiểu dữ liệu | Tĩnh, kiểm tra lúc biên dịch | TypeScript | Động |
+| Xử lý ảnh | Pure-Rust đọc header | `sharp` (tùy chọn) | tùy thư viện |
+| Độ trưởng thành | **v0.1, chưa kiểm thử rộng** | Lâu đời, cộng đồng lớn | Lâu đời |
+| Số API phủ | Tập lõi (xem roadmap) | Rất rộng | Rộng |
 
----
+> zalox mới ở giai đoạn đầu. Nếu cần phủ API rộng và ổn định ngay hôm nay, zca-js và zlapi vẫn là lựa chọn trưởng thành hơn.
 
-## 📄 Giấy Phép (License)
+## <a id="status"></a>🧪 Status
 
-Phân phối kép dưới giấy phép **[MIT](LICENSE-MIT)** hoặc **[Apache-2.0](LICENSE-APACHE)** tùy theo lựa chọn của bạn (chuẩn hệ sinh thái Rust).
+- ✅ Biên dịch sạch, `cargo clippy -- -D warnings` sạch, 12 unit test đạt (mã hóa, frame, vault, VietQR, webhook, image probe).
+- ⚠️ **Chưa xác minh đầu-cuối với máy chủ Zalo thật** (đăng nhập QR, WebSocket, gửi tin). Các endpoint và định dạng gói tin dựa trên nghiên cứu giao thức; Zalo có thể đổi bất cứ lúc nào. Báo lỗi qua Issues kèm log.
+- ⚠️ Chưa đo hiệu năng/bộ nhớ; chưa có benchmark.
+
+## 🗺️ Roadmap
+
+- [ ] Kiểm thử đầu-cuối đăng nhập + gửi/nhận tin, ghi nhận lỗi giao thức
+- [ ] Phủ thêm API: sticker catalog, tin nhắn cũ, nhóm nâng cao, nhãn, tự động trả lời
+- [ ] Gửi video/tệp qua `file_done` kèm test
+- [ ] Binding Python (PyO3) và JS (napi-rs) trên cùng lõi Rust
+- [ ] Publish lên crates.io, tài liệu docs.rs
+
+## 🤝 Contributing
+
+PR và issue đều được chào đón. Trước khi gửi: `cargo fmt && cargo clippy --all-targets -- -D warnings && cargo test`.
+
+## 👤 Tác giả
+
+**Phương** — [@kelvin9899-is](https://github.com/kelvin9899-is)
+
+Lập trình viên người Việt, thích dựng công cụ tự động hóa nhỏ gọn, chạy độc lập và dễ triển khai trên Windows. `zalox` ra đời từ mong muốn có một bộ SDK Zalo viết bằng Rust, đóng gói thành một file thực thi duy nhất, không kéo theo Node hay Python.
+
+## 🙏 Acknowledgements
+
+Giao thức Zalo Web được nghiên cứu từ các dự án mã nguồn mở [zca-js](https://github.com/RFS-ADRENO/zca-js) (MIT) và [zlapi](https://github.com/Its-VrxxDev/zlapi) (MIT). `zalox` là bản viết lại bằng Rust với kiến trúc riêng, nhưng các hằng số giao thức và định dạng gói tin xuất phát từ công trình của các tác giả đó. Xin cảm ơn họ.
+
+## License
+
+Dual-licensed under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
